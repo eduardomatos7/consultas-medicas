@@ -30,12 +30,13 @@ export const findConflictingAppointment = async (doctorId: string, date: Date, m
 export const findById = async (id: string) => {
   return await prisma.appointment.findUnique({
     where: { id },
+    include: { patient: true, doctor: true },
   });
 };
 
 export const listAppointments = async () => {
   return await prisma.appointment.findMany({
-    include: { patient: true, doctor: true },
+    include: { patient: false, doctor: false },
     orderBy: { date: "asc" },
   });
 };

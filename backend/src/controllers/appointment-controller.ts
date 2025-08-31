@@ -54,6 +54,17 @@ export const listAppointments = async (req: Request, res: Response, next: NextFu
   }
 };
 
+export const getAppointment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const appointment = await appointmentModel.findById(id);
+    if (!appointment) return next(new HttpError(404, APPOINTMENT_NOT_FOUND));
+    res.json(appointment);
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const cancelAppointment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;

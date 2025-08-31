@@ -45,3 +45,11 @@ export const deleteAppointmentSchema = z.object({
   body: z.object({}),
   query: z.object({}),
 });
+
+export const getAppointmentSchema = z.object({
+  params: z.object({
+    id: z.string().nonempty("Id da consulta é obrigatório"),
+  }),
+  body: z.object({}),
+  query: z.object({}),
+});
