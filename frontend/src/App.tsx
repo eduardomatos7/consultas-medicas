@@ -1,10 +1,18 @@
+import { BrowserRouter, Routes, Route } from 'react-router';
+import Home from './pages/Home';
+import ScheduleAppointment from './pages/ScheduleAppointment';
+import Layout from './components/Layout';
+
 function App() {
   return (
-    <>
-      <div className="grid h-screen place-content-center">
-        <h1 className="text-2xl">Hello World!</h1>
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/agendar" element={<ScheduleAppointment />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
