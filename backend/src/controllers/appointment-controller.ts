@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import * as patientModel from "../models/patientModel";
 import * as doctorModel from "../models/doctorModel";
 import * as appointmentModel from "../models/appointmentModel";
-import { Prisma } from "@prisma/client";
 import { isFuture, canCancel, asDate, isWithinBusinessHours } from "../utils/time";
 import { HttpError } from "../errors/HttpError";
 
@@ -38,7 +37,7 @@ export const createAppointment = async (req: Request, res: Response, next: NextF
     return res.status(201).json(appointment);
   } catch (err: any) {
     // pra pegar tambem violacoes de unique constraints do mysql que o prisma gera
-    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+    if ((err as any)?.code === "P2002") {
       return next(new HttpError(400, TIMETABLE_IN_USE));
     }
     next(err);
