@@ -19,3 +19,29 @@ export const cancelAppointmentSchema = z.object({
   body: z.object({}),
   query: z.object({}),
 });
+
+export const completeAppointmentSchema = z.object({
+  params: z.object({
+    id: z.string().nonempty("Id da consulta é obrigatório"),
+  }),
+  body: z.object({}),
+  query: z.object({}),
+});
+
+export const rescheduleAppointmentSchema = z.object({
+  params: z.object({
+    id: z.string().nonempty("Id da consulta é obrigatório"),
+  }),
+  body: z.object({
+    newDate: z.string().nonempty("Nova data é obrigatória"),
+  }),
+  query: z.object({}),
+});
+
+export const deleteAppointmentSchema = z.object({
+  params: z.object({
+    id: z.string().nonempty("Id da consulta é obrigatório"),
+  }),
+  body: z.object({}),
+  query: z.object({}),
+});
