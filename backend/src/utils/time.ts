@@ -9,3 +9,8 @@ export const canCancel = (appointmentDate: Date) => {
 };
 
 export const asDate = (input: string | Date) => (typeof input === "string" ? new Date(input) : input);
+
+export const isWithinBusinessHours = (date: Date) => {
+  const hour = date.getHours();
+  return hour >= 7 && hour < 17;
+};
