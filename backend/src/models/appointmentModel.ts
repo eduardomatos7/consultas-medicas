@@ -13,7 +13,7 @@ export const findByDoctorAndDate = async (doctorId: string, date: Date) => {
   });
 };
 
-export const findConflictingAppointment = async (doctorId: string, date: Date, minutes = 30) => {
+export const findConflictingAppointment = async (doctorId: string, date: Date, minutes = 29) => {
   const start = new Date(date.getTime() - minutes * 60 * 1000);
   const end = new Date(date.getTime() + minutes * 60 * 1000);
   return await prisma.appointment.findFirst({

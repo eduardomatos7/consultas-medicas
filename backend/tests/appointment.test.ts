@@ -51,7 +51,11 @@ describe("createAppointment controller - 30 minute rule", () => {
 
     await createAppointment(req, res, next);
 
-    expect(mockCreateAppointment).toHaveBeenCalledWith("patient-1", "doctor-1", new Date(req.body.date));
+    expect(mockCreateAppointment).toHaveBeenCalledWith(
+      "patient-1",
+      "doctor-1",
+      new Date(req.body.date)
+    );
     expect(res.status).toHaveBeenCalledWith(201);
   });
 });
@@ -117,14 +121,22 @@ describe("other appointment flows", () => {
   test("should reschedule appointment with valid new date", async () => {
     const appointmentDate = new Date();
     appointmentDate.setHours(appointmentDate.getHours() + 48);
-    mockFindById.mockResolvedValue({ id: "appt-5", doctorId: "doctor-1", date: appointmentDate });
+    mockFindById.mockResolvedValue({
+      id: "appt-5",
+      doctorId: "doctor-1",
+      date: appointmentDate,
+    });
     mockFindConflicting.mockResolvedValue(null);
     const newDate = new Date();
     newDate.setDate(newDate.getDate() + 10);
+    newDate.setHours(10, 0, 0, 0);
     mockReschedule.mockResolvedValue({ id: "appt-5", date: newDate });
 
     const controller = require("../src/controllers/appointment-controller");
-    const req: any = { params: { id: "appt-5" }, body: { newDate: newDate.toISOString() } };
+    const req: any = {
+      params: { id: "appt-5" },
+      body: { newDate: newDate.toISOString() },
+    };
     const res = makeRes();
     const next = makeNext();
 
