@@ -18,7 +18,7 @@ export default function ScheduleAppointment() {
   } = useScheduleForm();
 
   return (
-    <div className="flex w-full justify-center px-4 py-10 md:py-14">
+    <div className="flex w-full justify-center px-4 py-10 md:items-center md:py-14">
       <div className="grid w-full max-w-4xl gap-10 md:grid-cols-5">
         <section className="flex flex-col gap-6 md:col-span-2">
           <div>
@@ -32,7 +32,7 @@ export default function ScheduleAppointment() {
           <ValidationCard />
         </section>
         <form
-          className="flex flex-col gap-6 rounded-2xl border border-[#D6D3F9] bg-white p-6 shadow-lg md:col-span-3"
+          className="flex flex-col gap-6 rounded-2xl border border-[#D6D3F9] bg-white p-6 shadow-lg md:col-span-3 md:h-fit md:py-10"
           onSubmit={submit}
           noValidate
         >

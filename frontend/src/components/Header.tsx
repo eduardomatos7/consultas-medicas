@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 function Header() {
   return (
     <header className="w-full bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-4 md:gap-0">
         <Link
           to="/"
           className="font-poppins md:text-md from-textPink to-textPink bg-gradient-to-r via-[#634DCA] bg-clip-text font-normal text-transparent"
@@ -16,6 +16,12 @@ function Header() {
           </Link>
           <Link to="/agendar" className="text-secondary font-medium transition hover:text-gray-800">
             Agendar
+          </Link>
+          <Link
+            to="/consultas"
+            className="text-secondary font-medium transition hover:text-gray-800"
+          >
+            Consultas
           </Link>
         </nav>
       </div>

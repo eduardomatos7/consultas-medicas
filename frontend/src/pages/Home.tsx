@@ -19,6 +19,9 @@ export default function Home() {
             <ButtonLink to="/agendar" variant="primary" className="min-w-[200px]">
               Agendar uma consulta
             </ButtonLink>
+            <ButtonLink to="/consultas" variant="ghost" className="min-w-[200px]">
+              Ver consultas agendadas
+            </ButtonLink>
           </div>
         </div>
       </div>
