@@ -99,6 +99,21 @@ export const completeAppointment = async (req: Request, res: Response, next: Nex
   }
 };
 
+export const reopenAppointment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const appointment = await appointmentModel.findById(id);
+    if (!appointment) return next(new HttpError(404, APPOINTMENT_NOT_FOUND));
+    if (appointment.status === "Agendado") {
+      return next(new HttpError(400, "Consulta já está agendada."));
+    }
+    const reopened = await appointmentModel.reopenAppointment(id);
+    res.json(reopened);
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const rescheduleAppointment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;

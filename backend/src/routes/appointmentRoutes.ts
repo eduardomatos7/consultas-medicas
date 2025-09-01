@@ -8,6 +8,7 @@ import {
   completeAppointmentSchema,
   rescheduleAppointmentSchema,
   getAppointmentSchema,
+  reopenAppointmentSchema,
 } from "../schemas/appointmentSchema";
 
 const router = Router();
@@ -19,5 +20,6 @@ router.post("/:id/cancel", validate(cancelAppointmentSchema), controller.cancelA
 router.delete("/:id/delete", validate(deleteAppointmentSchema), controller.deleteAppointment);
 router.post("/:id/complete", validate(completeAppointmentSchema), controller.completeAppointment);
 router.put("/:id/reschedule", validate(rescheduleAppointmentSchema), controller.rescheduleAppointment);
+router.post("/:id/reopen", validate(reopenAppointmentSchema), controller.reopenAppointment);
 
 export default router;

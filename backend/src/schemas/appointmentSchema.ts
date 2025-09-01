@@ -53,3 +53,11 @@ export const getAppointmentSchema = z.object({
   body: z.object({}),
   query: z.object({}),
 });
+
+export const reopenAppointmentSchema = z.object({
+  params: z.object({
+    id: z.string().nonempty("Id da consulta é obrigatório"),
+  }),
+  body: z.object({}),
+  query: z.object({}),
+});
