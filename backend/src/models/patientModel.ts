@@ -5,5 +5,8 @@ export const findOrCreatePatient = async (name: string, cpf: string) => {
   if (!patient) {
     patient = await prisma.patient.create({ data: { name, cpf } });
   }
+  if (patient && patient.name !== name) {
+    return undefined;
+  }
   return patient;
 };

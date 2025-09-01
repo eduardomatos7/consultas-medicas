@@ -10,12 +10,13 @@ const APPOINTMENT_NOT_FOUND = "Consulta não encontrada.";
 const PAST_DATE_ERROR = "Não é permitido agendar consultas para o passado.";
 const BUSINESS_HOURS_ERROR = "Uma consulta só pode ser agendada entre 07:00 e 17:00.";
 const CANCELATION_TIME_ERROR = "Consultas só podem ser canceladas com mais de 24 horas de antecedência.";
+const CPF_ALREADY_REGISTERED = "CPF já cadastrado com outro nome.";
+const WRONG_SPECIALTY = "Especialidade não confere com o nome do médico.";
 
 export const createAppointment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { patientName, patientCPF, doctorName, specialty, date } = req.body;
     const appointmentDate = asDate(date);
-    console.log(appointmentDate.toString(), new Date().toString());
 
     if (!isFuture(appointmentDate)) {
       return next(new HttpError(400, PAST_DATE_ERROR));
@@ -24,13 +25,17 @@ export const createAppointment = async (req: Request, res: Response, next: NextF
     if (!isWithinBusinessHours(appointmentDate)) {
       return next(new HttpError(400, BUSINESS_HOURS_ERROR));
     }
-
-    const patient = await patientModel.findOrCreatePatient(patientName, patientCPF);
     const doctor = await doctorModel.findOrCreateDoctor(doctorName, specialty);
-
-    const existing = await appointmentModel.findConflictingAppointment(doctor.id, appointmentDate, 30);
+    if (!doctor) {
+      return next(new HttpError(400, WRONG_SPECIALTY));
+    }
+    const existing = await appointmentModel.findConflictingAppointment(doctor.id, appointmentDate, 29);
     if (existing) {
       return next(new HttpError(400, TIMETABLE_IN_USE));
+    }
+    const patient = await patientModel.findOrCreatePatient(patientName, patientCPF);
+    if (!patient) {
+      return next(new HttpError(400, CPF_ALREADY_REGISTERED));
     }
 
     const appointment = await appointmentModel.createAppointment(patient.id, doctor.id, appointmentDate);
@@ -94,6 +99,21 @@ export const completeAppointment = async (req: Request, res: Response, next: Nex
   }
 };
 
+export const reopenAppointment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const appointment = await appointmentModel.findById(id);
+    if (!appointment) return next(new HttpError(404, APPOINTMENT_NOT_FOUND));
+    if (appointment.status === "Agendado") {
+      return next(new HttpError(400, "Consulta já está agendada."));
+    }
+    const reopened = await appointmentModel.reopenAppointment(id);
+    res.json(reopened);
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const rescheduleAppointment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
@@ -126,7 +146,10 @@ export const deleteAppointment = async (req: Request, res: Response, next: NextF
     const appointment = await appointmentModel.findById(id);
     if (!appointment) return next(new HttpError(404, APPOINTMENT_NOT_FOUND));
     const deleted = await appointmentModel.deleteAppointment(id);
-    res.json({ message: "Consulta deletada com sucesso", appointment: deleted });
+    res.json({
+      message: "Consulta deletada com sucesso",
+      appointment: deleted,
+    });
   } catch (err: any) {
     next(err);
   }

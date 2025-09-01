@@ -13,7 +13,7 @@ export const findByDoctorAndDate = async (doctorId: string, date: Date) => {
   });
 };
 
-export const findConflictingAppointment = async (doctorId: string, date: Date, minutes = 30) => {
+export const findConflictingAppointment = async (doctorId: string, date: Date, minutes = 29) => {
   const start = new Date(date.getTime() - minutes * 60 * 1000);
   const end = new Date(date.getTime() + minutes * 60 * 1000);
   return await prisma.appointment.findFirst({
@@ -36,7 +36,7 @@ export const findById = async (id: string) => {
 
 export const listAppointments = async () => {
   return await prisma.appointment.findMany({
-    include: { patient: false, doctor: false },
+    include: { patient: true, doctor: true },
     orderBy: { date: "asc" },
   });
 };
@@ -57,6 +57,15 @@ export const completeAppointment = async (id: string) => {
     include: { patient: true, doctor: true },
   });
   return appointment.status + "!";
+};
+
+export const reopenAppointment = async (id: string) => {
+  const appointment = await prisma.appointment.update({
+    where: { id },
+    data: { status: "Agendado" },
+    include: { patient: true, doctor: true },
+  });
+  return appointment.status;
 };
 
 export const rescheduleAppointment = async (id: string, newDate: Date) => {
