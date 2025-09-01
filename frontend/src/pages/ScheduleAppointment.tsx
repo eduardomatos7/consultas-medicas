@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { Controller } from 'react-hook-form';
+
 import { Button } from '../components/Button';
-import { TextField } from '../components/FormField';
 import { ComboField } from '../components/ComboField';
+import { TextField } from '../components/FormField';
 import ValidationCard from '../components/ValidationCard';
-import type { ComboOption } from '../interfaces/combobox';
+import { especialidades } from '../config';
+import { useScheduleForm } from '../hooks/useScheduleForm';
 
 export default function ScheduleAppointment() {
-  const especialidades: ComboOption[] = [
-    { value: 'cardiologia1', label: 'Cardiologia1' },
-    { value: 'cardiologia2', label: 'Cardiologia2' },
-    { value: 'cardiologia3', label: 'Cardiologia3' },
-    { value: 'cardiologia4', label: 'Cardiologia4' },
-    { value: 'cardiologia5', label: 'Cardiologia5' },
-  ];
-  const [especialidade, setEspecialidade] = useState<string | null>(null);
+  const {
+    register,
+    control,
+    submit,
+    handleCpfChange,
+    cpfValue,
+    formState: { errors, isSubmitting },
+  } = useScheduleForm();
+
   return (
     <div className="flex w-full justify-center px-4 py-10 md:py-14">
       <div className="grid w-full max-w-4xl gap-10 md:grid-cols-5">
@@ -30,44 +33,92 @@ export default function ScheduleAppointment() {
         </section>
         <form
           className="flex flex-col gap-6 rounded-2xl border border-[#D6D3F9] bg-white p-6 shadow-lg md:col-span-3"
-          onSubmit={e => e.preventDefault()}
+          onSubmit={submit}
+          noValidate
         >
           <div className="flex flex-col gap-6">
             <div className="grid gap-5 sm:grid-cols-2">
               <TextField
-                id="nomePaciente"
+                id="patientName"
                 label="Nome do Paciente"
                 placeholder="Ex: Maria da Silva"
                 required
+                error={errors.patientName?.message}
+                {...register('patientName')}
               />
-              <TextField id="cpf" label="CPF" placeholder="000.000.000-00" required />
+              {(() => {
+                const { ref } = register('patientCPF');
+                return (
+                  <TextField
+                    id="patientCPF"
+                    label="CPF"
+                    placeholder="000.000.000-00"
+                    required
+                    error={errors.patientCPF?.message}
+                    ref={ref}
+                    value={cpfValue}
+                    onChange={handleCpfChange}
+                    inputMode="numeric"
+                    maxLength={14}
+                  />
+                );
+              })()}
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               <TextField
-                id="nomeMedico"
+                id="doctorName"
                 label="Nome do Médico"
                 placeholder="Ex: Dr. José da Silva"
                 required
+                error={errors.doctorName?.message}
+                {...register('doctorName')}
               />
-              <ComboField
-                id="especialidade"
-                label="Especialidade"
-                required
-                options={especialidades}
-                value={especialidade}
-                onChange={setEspecialidade}
-                placeholder="Selecione ou pesquise"
-                noOptionsMessage="Nenhuma especialidade encontrada"
-              />
+              <div className="flex flex-col gap-1">
+                <Controller
+                  control={control}
+                  name="specialty"
+                  render={({ field: { onChange, value } }) => (
+                    <ComboField
+                      id="specialty"
+                      label="Especialidade"
+                      required
+                      options={especialidades}
+                      value={value}
+                      onChange={onChange}
+                      placeholder="Selecione ou pesquise"
+                      noOptionsMessage="Nenhuma especialidade encontrada"
+                    />
+                  )}
+                />
+                {errors.specialty?.message && (
+                  <span className="mt-1 text-xs font-medium text-red-500" role="alert">
+                    {errors.specialty.message}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
-              <TextField id="dataConsulta" label="Data da Consulta" type="date" required />
-              <TextField id="horaConsulta" label="Hora da Consulta" type="time" required />
+              <TextField
+                id="date"
+                label="Data da Consulta"
+                type="date"
+                required
+                error={errors.date?.message}
+                {...register('date')}
+              />
+              <TextField
+                id="time"
+                label="Hora da Consulta"
+                type="time"
+                required
+                error={errors.time?.message}
+                {...register('time')}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-4 pt-2 sm:flex-row">
-            <Button variant="primaryGhost" className="flex-1">
-              Agendar consulta
+            <Button variant="primaryGhost" className="flex-1" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Agendando...' : 'Agendar consulta'}
             </Button>
           </div>
         </form>
