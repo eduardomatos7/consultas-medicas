@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import type { AppointmentDTO } from '../../services/appointment-list-service';
 
@@ -10,9 +10,30 @@ interface StatusSelectProps {
 
 export function StatusSelect({ value, onChange, disabled }: StatusSelectProps) {
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const statuses: AppointmentDTO['status'][] = ['Agendado', 'Realizado', 'Cancelado'];
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handleClickOutside(event: Event) {
+      const target = event.target as Node | null;
+      if (rootRef.current && target && !rootRef.current.contains(target)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={rootRef}>
       <button
         disabled={disabled}
         onClick={() => setOpen(o => !o)}

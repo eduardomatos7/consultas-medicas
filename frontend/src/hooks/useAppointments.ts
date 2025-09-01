@@ -32,10 +32,12 @@ export function useAppointments() {
       try {
         if (status === 'Cancelado') {
           const res = await cancelAppointment(a.id);
-          if (typeof res === 'string') toast.success('Consulta cancelada');
+          if (res === 'Cancelado') toast.success('Consulta cancelada');
+          else toast.error(res);
         } else if (status === 'Realizado') {
           const res = await completeAppointment(a.id);
-          if (typeof res === 'string') toast.success('Consulta concluída');
+          if (res === 'Realizado!') toast.success('Consulta concluída');
+          else toast.error(res);
         } else if (status === 'Agendado') {
           const res = await reopenAppointment(a.id);
           if (typeof res === 'string') toast.success('Consulta reaberta');
@@ -51,7 +53,6 @@ export function useAppointments() {
 
   const remove = useCallback(
     async (id: string) => {
-      if (!confirm('Deseja realmente excluir esta consulta?')) return;
       const res = await deleteAppointment(id);
       if (!res) toast.error(res);
       else toast.success('Consulta excluída');
