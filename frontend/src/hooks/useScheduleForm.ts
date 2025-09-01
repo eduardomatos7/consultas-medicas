@@ -1,10 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { schedule } from '../schemas/scheduleAppointmentSchema';
+import { postScheduleAppointment } from '../services/schedule-service';
 import type { scheduleSchemaType } from '../types/schedule.types';
 import { formatCpfInput, unmaskCpf } from '../utils/cpf';
 import { buildAppointmentPayload } from '../utils/schedule';
+
+const CREATED_SUSCESSFULLY = 'Consulta agendada com sucesso!';
 
 export function useScheduleForm() {
   const form = useForm<scheduleSchemaType>({
@@ -39,10 +43,19 @@ export function useScheduleForm() {
         date: data.date,
         time: data.time,
       });
-      console.log(payload);
       await new Promise(r => setTimeout(r, 600));
-      reset();
       setFocus('patientName');
+      const response = await postScheduleAppointment(payload);
+
+      if (response.status === 201) {
+        toast.success(CREATED_SUSCESSFULLY);
+        reset();
+        return;
+      }
+      if (response.status !== 201 && response) {
+        toast.error(response);
+        return;
+      }
     },
     errors => {
       const first = Object.keys(errors)[0] as keyof scheduleSchemaType | undefined;
