@@ -3,6 +3,11 @@
 Projeto completo com frontend em React + Vite + Typescript e com Backend Node.js (TypeScript + Prisma + MySQL) containerizado via Docker Compose.
 É possível criar e gerenciar consultas, com diferentes tipos de validação.
 
+## Vídeo de demonstração
+
+https://github.com/user-attachments/assets/d8b0e29a-07cc-4ceb-ae63-46645f59d337
+
+
 ## 1. Requisitos
 
 - Docker Desktop (Engine >= 24, Compose v2)
@@ -145,3 +150,4 @@ npm run dev
 # IMPORTANTE
 
 Se não tiver nenhuma especialidade no dropdown é porque não ouve conexão com o backend ou banco, necessário tentar novamente o passo a passo ou verificar bugs
+
