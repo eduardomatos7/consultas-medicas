@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import type { AppointmentDTO } from '../../services/appointment-list-service';
 import { Button } from '../Button';
+import { toast } from 'react-toastify';
 
 interface ModalProps {
   appointment: AppointmentDTO | null;
@@ -60,7 +61,7 @@ export function AppointmentModal({ appointment, onClose, onReschedule }: ModalPr
             <Button
               variant="primaryGhost"
               onClick={() => {
-                if (!newDate) return alert('Selecione uma nova data');
+                if (!newDate) return toast.error('Selecione uma nova data');
                 onReschedule(new Date(newDate).toISOString());
                 setNewDate('');
               }}

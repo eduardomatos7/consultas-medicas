@@ -26,7 +26,7 @@ function TableDesktop({
 }: TableProps) {
   return (
     <div className="hidden md:block">
-      <div className="border-background-button/20 min-h-[40vh] overflow-hidden rounded-xl border bg-white shadow-sm">
+      <div className="border-background-button/20 min-h-[40vh] max-h-[60vh] overflow-y-scroll rounded-xl border bg-white shadow-sm">
         <table
           className={` ${rows.length === 0 && 'min-h-[40vh]'} w-full table-fixed border-collapse text-left text-sm`}
         >
