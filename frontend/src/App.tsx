@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
+
+import Layout from './components/Layout';
 import Home from './pages/Home';
 import ScheduleAppointment from './pages/ScheduleAppointment';
-import Layout from './components/Layout';
 
 function App() {
   return (
