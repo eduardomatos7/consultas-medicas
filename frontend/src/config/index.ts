@@ -1,9 +1,10 @@
 import type { ComboOption } from '../interfaces/combobox';
 
-export const especialidades: ComboOption[] = [
-  { value: 'cardiologia1', label: 'Cardiologia1' },
-  { value: 'cardiologia2', label: 'Cardiologia2' },
-  { value: 'cardiologia3', label: 'Cardiologia3' },
-  { value: 'cardiologia4', label: 'Cardiologia4' },
-  { value: 'cardiologia5', label: 'Cardiologia5' },
-];
+export async function fetchEspecialidades(
+  apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+): Promise<ComboOption[]> {
+  const res = await fetch(`${apiBase}/specialties`);
+  if (!res.ok) return [];
+  const data: { value: string; label: string }[] = await res.json();
+  return data;
+}

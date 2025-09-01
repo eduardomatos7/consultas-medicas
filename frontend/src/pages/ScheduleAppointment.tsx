@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Button } from '../components/Button';
 import { ComboField } from '../components/ComboField';
 import { TextField } from '../components/FormField';
 import ValidationCard from '../components/ValidationCard';
-import { especialidades } from '../config';
+import { fetchEspecialidades } from '../config';
 import { useScheduleForm } from '../hooks/useScheduleForm';
 
 export default function ScheduleAppointment() {
@@ -16,6 +17,22 @@ export default function ScheduleAppointment() {
     cpfValue,
     formState: { errors, isSubmitting },
   } = useScheduleForm();
+
+  const [especialidades, setEspecialidades] = useState<{ label: string; value: string }[]>([]);
+  const [loadingEspecialidades, setLoadingEspecialidades] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoadingEspecialidades(true);
+    fetchEspecialidades()
+      .then(list => {
+        if (mounted) setEspecialidades(list);
+      })
+      .finally(() => mounted && setLoadingEspecialidades(false));
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="flex w-full justify-center px-4 py-10 md:items-center md:py-14">
@@ -86,7 +103,9 @@ export default function ScheduleAppointment() {
                       value={value}
                       onChange={onChange}
                       placeholder="Selecione ou pesquise"
-                      noOptionsMessage="Nenhuma especialidade encontrada"
+                      noOptionsMessage={
+                        loadingEspecialidades ? 'Carregando...' : 'Nenhuma especialidade encontrada'
+                      }
                     />
                   )}
                 />
